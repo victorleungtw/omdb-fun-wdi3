@@ -6,37 +6,37 @@
       return $.ajax({
         url: "http://www.omdbapi.com/?s=" + title
       }).done(function(data) {
-        var movie, movies, _i, _len;
+        var movie, movies, _i, _len, _results;
         movies = $.parseJSON(data)['Search'];
         console.log(movies);
+        _results = [];
         for (_i = 0, _len = movies.length; _i < _len; _i++) {
           movie = movies[_i];
-          $('#movies').append("<li data-imdb=" + movie.imdbID + ">" + movie.Title + "</li>");
+          _results.push($('#movies').append("<li data-imdb=" + movie.imdbID + ">" + movie.Title + "</li>"));
         }
-        return $('li').on('click', function(e) {
-          var imdbID;
-          console.log(e.target);
-          console.log($(e.target));
-          imdbID = $(e.target).data('imdb');
-          return detail(imdbID);
-        });
+        return _results;
       }).fail(function(j, t, e) {
         return console.log(j, t, e);
       });
     };
     master("Harry");
-    return detail = function(imdbID) {
+    detail = function(imdbID) {
       return $.ajax({
         url: "http://www.omdbapi.com/?i=" + imdbID + "&tomatoes=true&plot=full"
       }).done(function(data) {
         var movie;
-        console.log(data);
         movie = $.parseJSON(data);
         return $('#detail').html('<span>' + movie.Plot + '</span>');
       }).fail(function(j, t, e) {
         return console.log(j, t, e);
       });
     };
+    return $('body').delegate('li', 'click', function(e) {
+      var imdbID;
+      console.log(e.target);
+      imdbID = $(e.target).data('imdb');
+      return detail(imdbID);
+    });
   });
 
 }).call(this);
